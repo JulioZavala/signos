@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SIGNOS - AGENTES</title>
+    <div th:substituteby="includes/header"/>
+</head>
+<body>
+    <div th:substituteby="includes/menu :: adm"/>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="span8">
+                <div class="page-header">
+                    <h2 th:if="${stake.id > 0}" th:text="${stake.persona.nombres} +' '+ ${stake.persona.apellidos} ">Editar </h2>
+                    <h2 th:unless="${stake.id > 0}">Nuevo Stakeholder</h2>
+                </div>
+
+                <form class="form-horizontal" th:action="@{/adm/stakeholder/save}" method="post" th:object="${stake}" >
+                    <input type="hidden" th:value="${_cid}" name="_cid"/>
+
+                    <div class="control-group">
+                        <label class="control-label">Cliente</label>
+
+                        <div class="controls">
+                            <select name="cliente.id"  th:field="*{cliente.id}">
+                                <option th:each="cliente: ${clientes}" 
+                                        th:value="${cliente.id}"
+                                        th:text="${cliente.nombre}" 
+                                        /> 
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Nombres</label>
+
+                        <div class="controls">
+                            <input type="hidden" name="persona.id" th:field="*{persona.id}" />
+
+                            <input type="text" name="persona.nombres" th:field="*{persona.nombres}" />
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <label class="control-label" >Apellidos</label>
+
+                        <div class="controls">
+                            <input type="text" name="persona.apellidos" th:field="*{persona.apellidos}" />
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <label class="control-label">Email</label>
+
+                        <div class="controls">
+                            <input type="text" name="persona.email" th:field="*{persona.email}" />
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <label class="control-label">Celular</label>
+
+                        <div class="controls">
+                            <input type="text" name="persona.celular" th:field="*{persona.celular}"/>
+                        </div>
+                    </div>
+
+                    
+                    <div class="control-group">
+                        <label class="control-label">Productos</label>
+
+                        <div class="controls">
+                            <select name="productos" multiple="multiple" size="6"> </select>
+                        </div>
+                    </div>
+
+
+                    <div class="btn-toolbar pull-right">
+                        <div class="btn-group"> <a class="btn" href="#" th:href="@{/adm/stakeholder/}"> Cancelar </a></div>
+                        <div class="btn-group"><input class="btn btn-primary" type="submit" value="Guardar"/></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<div  th:substituteby="includes/footer"/>
+<script>
+    $(function() {
+        loadProductos();
+        
+        $('select[name="cliente.id"]').change(function(eventObject) {
+            loadProductos();
+        });
+        
+
+        function loadProductos() {
+            var cliente = $('select[name="cliente.id"]').find(':selected').val();
+            var t = $('input[name="_cid"]').val();
+
+            $.ajax({
+                url: '/signos/adm/stakeholder/productos',
+                method: 'post',
+                data: {cli: cliente, _cid: t},
+                success: function(response) {
+                    var optionsValues = '';
+                    $.each(response.data, function(key, val) {
+                        var selected = (val.selected) ? " selected" :" ";
+                        
+                        optionsValues += "<option value=" + val.id + selected + " >" + val.name + "</option>";
+                    });
+
+                    $('select[name="productos"]').html(optionsValues);
+                }
+            });
+        }
+
+
+
+
+    });
+</script>
+</html>

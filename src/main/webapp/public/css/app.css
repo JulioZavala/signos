@@ -1,0 +1,259 @@
+/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400|Lato:100,300,400); */
+
+body {
+    position: relative;
+    padding-top: 40px;
+}
+
+
+.footer{
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+}
+/* AUTENTICACION */
+
+.body_grey {
+    background-color: #f5f5f5;
+
+}
+
+.logo-heading{
+    margin: 10px 0 0px 0;
+    text-align: center;
+    width: 235px;
+    height: 109px;
+    margin-left: auto;
+    margin-right: auto;
+    background: url(../img/logo_login.png) no-repeat;
+}     
+
+.form_login {
+    width: 500px;
+    padding: 20px 10px 30px 10px;
+    margin: 8% auto auto auto;
+
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;      
+}
+
+.modal-wait{
+    margin: -5px 5px 0 0;  
+}
+
+.pull-center{
+    text-align: center;
+
+}
+
+/* ROLLINGAS */
+.roll-link {
+    color: #fff;
+    
+    display: inline-block;
+    overflow: hidden;
+
+    vertical-align: top;
+
+    -webkit-perspective: 600px;
+    -moz-perspective: 600px;
+    -ms-perspective: 600px;
+    perspective: 600px;
+
+    -webkit-perspective-origin: 50% 50%;
+    -moz-perspective-origin: 50% 50%;
+    -ms-perspective-origin: 50% 50%;
+    perspective-origin: 50% 50%;
+
+}
+
+.roll-link:hover {text-decoration:none;}
+
+.roll-link span {
+    display: block;
+    position: relative;
+    padding: 0 2px;
+
+    -webkit-transition: all 400ms ease;
+    -moz-transition: all 400ms ease;
+    -ms-transition: all 400ms ease;
+    transition: all 400ms ease;
+
+    -webkit-transform-origin: 50% 0%;
+    -moz-transform-origin: 50% 0%;
+    -ms-transform-origin: 50% 0%;
+    transform-origin: 50% 0%;
+
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+.roll-link:hover span {
+    background: #DD4D42;
+
+
+    -webkit-transform: translate3d( 0px, 0px, -30px ) rotateX( 90deg );
+    -moz-transform: translate3d( 0px, 0px, -30px ) rotateX( 90deg );
+    -ms-transform: translate3d( 0px, 0px, -30px ) rotateX( 90deg );
+    transform: translate3d( 0px, 0px, -30px ) rotateX( 90deg );
+}
+
+.roll-link span:after {
+    content: attr(data-title);
+
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0 2px;
+
+    color: #fff;
+    background: #DD4D42;
+
+    -webkit-transform-origin: 50% 0%;
+    -moz-transform-origin: 50% 0%;
+    -ms-transform-origin: 50% 0%;
+    transform-origin: 50% 0%;
+
+    -webkit-transform: translate3d( 0px, 105%, 0px ) rotateX( -90deg );
+    -moz-transform: translate3d( 0px, 105%, 0px ) rotateX( -90deg );
+    -ms-transform: translate3d( 0px, 105%, 0px ) rotateX( -90deg );
+    transform: translate3d( 0px, 105%, 0px ) rotateX( -90deg );
+}
+
+
+/* TICKET INDEX*/ 
+.form-body{
+    background: url(../img/back.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.form-ticket{
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+    border-radius: 15px;
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+
+    background-color: #fff;
+    padding: 1em 4em 1px 4em;
+
+    height: 17em;
+    margin: 12em 0 0 1em;
+
+}
+
+.form-ticket .control-label{
+    width:100px;
+    float: left;
+    padding-top: 5px;
+    width: 80px;
+    font-size: 14px;
+}
+
+.left-group{
+    margin: 4em 0 0 0;
+}
+
+
+/*DETALLE TICKET */
+
+#ticket-header h3{
+    display: inline;
+}
+
+#ticket-header .codigo-ticket{
+    font-size: 1.3em;
+    margin: 0 0 0 10px;
+    display: inline;
+
+}
+
+#ticket-header .estado-ticket{
+    float:right;
+    margin: 12px 10px 0 0;
+}
+
+#ticket-header .detalle-ticket{
+    margin: -8px 0 10px 0;
+    font-size: 0.9em;
+}
+
+#ticket-header .accion{
+    margin-top:-5px;
+}
+
+#ticket-messages{
+    padding: 0 0 0 1em;
+
+}
+
+.post-container{	
+    border-bottom: 1.2px solid #e3e3e3;
+    margin: 1em 0 1.5em 0;
+}
+
+.post-container h5{
+    display: inline;
+}
+
+.post-container .detalle-message{
+    font-size: 0.8em;
+    margin: 0 0 0 5px;
+    display: inline;
+
+}
+
+#ticket-response{
+    padding: 0 0 0 1em;
+    margin-bottom: 15em;
+}
+
+.response{
+    width: 98%;
+}
+
+/* FILE UPLOAD */
+#upload{
+    margin: 5px 0 30px 0;
+}
+
+#upload ul{
+    list-style: none;
+}
+
+#upload ul li p{
+    display: inline;
+    margin: 0 .3em;
+}
+
+#upload ul li span{
+    display: inline-block;
+    vertical-align: text-top;
+    cursor:pointer;
+    margin-top: 5px;
+    width: 14px;
+    height: 14px;
+    background-image: url("../bootstrap/img/glyphicons-halflings.png");
+    background-position: -312px 0;
+    background-repeat: no-repeat;
+}
+
+#upload ul li.error p{
+    color: red;
+}
+
+.adjunto {
+    list-style: none;
+    margin-left: -25px;
+    font-size: 0.8em;
+
+}

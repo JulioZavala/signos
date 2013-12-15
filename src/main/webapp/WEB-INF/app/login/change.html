@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SIGNOS -Tickets</title>
+    <div th:substituteby="includes/header"/>
+</head>
+<body>
+    <div class="container">
+
+        <div class="row">
+            <div class="span12">
+
+                <div class="page-header">                  
+                    <h2>Cambiar contraseña</h2>                
+                </div>
+
+                <form id="change">
+                    <div class="control-group">
+                        <label class="control-label">Contraseña Actual</label>
+
+                        <div class="controls">
+                            <input type="password" name="now" class="input-xlarge"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Nueva Contraseña</label>
+
+                        <div class="controls">
+                            <input type="password" id="passwo" name="passwo" class="input-xlarge"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Repetir Nueva Contraseña</label>
+
+                        <div class="controls">
+                            <input type="password" name="passwi" class="input-xlarge"/>
+                        </div>
+                    </div>
+
+                    <div class="btn-toolbar">
+                        <div  class="btn-group"><a class="btn" th:href="@{/}">Volver</a></div>
+                        <div class="btn-group"><input type="submit" class="btn btn-primary" value="Cambiar"/></div>   
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<div  th:substituteby="includes/footer"/>
+
+<script>
+    $(document).ready(function() {
+        $('#change').validate({
+            rules: {
+                now: {required: true},
+                passwo: {required: true},
+                passwi: {required: true, equalTo: "#passwo" }
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            },
+            submitHandler: function(form) {
+                $('input:submit').attr("disabled", "disabled");
+
+                $(form).ajaxSubmit({
+                    url: 'change',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            humane.log(response.message, {timeout: 2000, addnCls: 'humane-original-success'}, function() {
+                                window.location.replace("/signos");
+                            });
+                        } else {
+                            humane.log(response.message, {addnCls: 'humane-original-error'});
+                            $('input:submit').removeAttr("disabled");
+
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+
+</script>
+</html>

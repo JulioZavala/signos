@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SIGNOS</title>
+    <div th:substituteby="includes/header"/>
+
+</head>
+<body class="form-body">
+    <form method="post" class="form-horizontal form_login" th:action="@{/j_spring_security_check}" >
+        <div class="logo-heading"> </div>
+
+        <p class="text-error text-center" th:if="${loginError}">Usuario y/o contraseña incorrectos.</p>
+        
+        <br/>
+        
+        <div class="control-group">
+            <label class="control-label">Usuario</label>
+
+            <div class="controls">
+                <input type="text" name="j_username" id="j_username" autofocus="autofocus" />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Contraseña</label>
+
+            <div class="controls">
+                <input type="password" name="j_password" id="j_password"/>
+            </div>
+        </div>
+
+        <div class="btn-toolbar pull-center">
+            <div class="btn-group"><a class="btn" th:href="@{/}">Cancelar</a></div>
+            <div class="btn-group"><button type="submit" class="btn btn-primary">Ingresar</button></div>   
+        </div>
+
+    </form>
+    <footer class="footer">
+      <div class="row text-right">
+        <a target="_blank" href="http://www.albatross.pe" class="roll-link"><span data-title="Albatross">Albatross</span></a>
+      </div>
+    </footer>
+    <div th:substituteby="includes/footer"/>
+</body>
+</html>

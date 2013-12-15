@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SIGNOS -Tickets</title>
+  <div th:substituteby="includes/header"/>
+</head>
+<body>
+  <div th:substituteby="includes/menu :: stake"/>
+  <div class="container">
+
+    <ul class="breadcrumb">
+      <li class="active">
+        <a th:href="@{/ticket/list}" th:text="${'Tickets Activos (' +totales.get(0)+')'}"> Tickets Activos </a>
+        <span class="divider">/</span>
+      </li>
+      <li class="active">
+        <a th:href="@{/ticket/list(status='closed')}" th:text="${'Tickets Resueltos (' +totales.get(2)+')'}" >Tickets Resueltos </a>
+      </li>
+    </ul>
+
+    <div class="row">
+      <div class="span12">
+
+        <div class="page-header">                  
+          <div class="control-group pull-right">
+            <a class="btn btn-success" th:href="@{/newTicket}">Nuevo Ticket</a>
+          </div>
+          <h2>Tickets</h2>                
+        </div>
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <td>Estado</td>
+              <td>#Ticket</td>
+              <td>Producto</td>
+              <td>Asunto</td>
+              <td>Stakeholder</td>
+              <td>Fecha Actualización</td>
+              <td>Prioridad</td>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="ticket:${tickets}">
+              <td th:switch="${ticket.estado}">
+
+                <span th:case="0" class="label"
+                      th:text="${T(app.zelper.enums.EstadoTicket).get( ticket.estado )}">Nuevo/Respondido/Cerrado</span>
+
+                <span th:case="1" class="label label-info"
+                      th:text="${T(app.zelper.enums.EstadoTicket).get( ticket.estado )}">Nuevo/Respondido/Cerrado</span>
+                <span th:case="2" class="label label-inverse"
+                      th:text="${T(app.zelper.enums.EstadoTicket).get( ticket.estado )}">Nuevo/Respondido/Cerrado</span>
+              </td>
+
+              <td><a th:text="${ticket.codigo}" th:href="@{/ticket/}+${ticket.codigo}"></a></td>
+
+              <td th:text="${ticket.getProducto().getNombre()}"> WEBSITE</td>
+
+              <td><a th:text="${ticket.asunto}" th:href="@{/ticket/}+${ticket.codigo}"></a></td>
+
+
+              <td th:text="${ticket.stake.getNombreCompleto()}">José EA</td>
+
+              <td th:text="${#dates.format(ticket.getFechaActualiza(),'dd/MM/yyyy hh:mm')}">02/05/2019 04:24</td>
+
+
+              <td th:switch="${ticket.prioridad}">
+                <span th:case="0" class="label label-success"
+                      th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</span>
+
+                <span th:case="1" class="label label-warning"
+                      th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</span>
+
+                <span th:case="2" class="label label-important"
+                      th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</span>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+<div  th:substituteby="includes/footer"/>
+</html>

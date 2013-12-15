@@ -1,0 +1,59 @@
+
+<div th:fragment="adm" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand">SIGNOS</a>
+            <ul class="nav nav-bar">
+                <li> <a href="#" th:href="@{/adm/cliente/}">Clientes</a> </li>
+                <li><a href="#" th:href="@{/adm/producto/}">Productos</a> </li>				
+                <li><a href="#" th:href="@{/adm/stakeholder/}">Stakeholders</a> </li>
+                <li><a href="#" th:href="@{/adm/staff/}">Staff</a> </li>
+            </ul>
+
+             <ul class="nav navbar-text pull-right">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" sec:authentication="name">Bob <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/auth/change}">Cambiar contraseña</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="navbar-link" th:href="@{/j_spring_security_logout}">Salir</a></li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+<div th:fragment="stake" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand">SIGNOS</a>
+
+            <p class="navbar-text pull-right" sec:authorize="hasRole('ROLE_ANONYMOUS')">
+                <a class="navbar-link" th:href="@{/login}">Staff</a>
+            </p>
+            
+            <p class="navbar-text pull-right" sec:authorize="hasAnyRole('Stakeholder')">
+                <span sec:authentication="name">Bob</span> | <a class="navbar-link" th:href="@{/j_spring_security_logout}">Salir</a>
+            </p>
+            
+            <ul class="nav navbar-text pull-right" sec:authorize="hasAnyRole('Staff')">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" sec:authentication="name">Bob <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/auth/change}">Cambiar contraseña</a></li>
+                    </ul>
+                </li>
+
+                <li><a class="navbar-link" th:href="@{/j_spring_security_logout}">Salir</a></li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>

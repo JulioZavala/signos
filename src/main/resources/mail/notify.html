@@ -1,0 +1,31 @@
+<table width="100%" align="center" style="padding:10px; background:#f9f9f9;" cellpadding="0" cellspacing="0">
+        <tr>
+            <td height="80" bgcolor="#278BF3" style="padding:0px 0px 0px 20px; color:#fff; ">
+                <h1 style="font-size:20px;color:#fff; font-weight:normal; font-family: Segoe UI, Helvetica, Tahoma, Sans Serif; " 
+                    th:text="'Ticket #' + ${ticket.codigo} + ' - ' + ${ticket.asunto}">
+                    #Ticket 666666 - Error en la Sesión 7 del Sistema LPC y TRC 
+                </h1>
+            </td>
+        </tr>
+        <tr bgcolor="#fff">
+            <td style="padding:20px 20px; font-size:18px; color:#666; font-family: Segoe UI, Helvetica, Tahoma, Sans Serif;">
+                <p th:utext="${mensaje}">Mensaje </p>
+
+                <font style="font-size: 14px;">
+                <p th:utext="${detalle}"> Detalle del Mensaje</p>
+                </font>
+
+                <p style="font-size: 13px;">
+                    <a th:if="${usuario == T(app.zelper.enums.Usuarios).Stakeholder}" th:href="@{http://signos.albatross.pe/stake/} + ${ticket.getCodigo()} +'/'+ ${ticket.getStake().getEmail()}" href="#signos" target="_blank">Ver el ticket</a>
+                    <a th:if="${usuario == T(app.zelper.enums.Usuarios).Staff}" th:href="@{http://signos.albatross.pe/ffats/} + ${ticket.getCodigo()} +'/'+ ${ticket.getStaff().getEmail()}" href="#signos" target="_blank">Ver el ticket</a>
+                </p>
+                <br/>
+                <p style="font-size: 14px;">El equipo de Albatross</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <a style="text-decoration:none; font-family: Segoe UI, Helvetica, Tahoma, Sans Serif; font-size:12px; color:#278BF3; " href="http://www.albatross.pe" target="_blank">Albatross</a>
+            </td>
+        </tr>
+</table>

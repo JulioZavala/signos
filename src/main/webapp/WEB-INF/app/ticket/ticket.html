@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title th:text="'Ticket #'+${ticket.codigo}+' - '+${ticket.asunto}">Ticket </title>
+    <div th:substituteby="includes/header"/>
+</head>
+<body>
+    <div th:substituteby="includes/menu :: stake"/>
+
+    <div class="container">
+
+        <ul class="breadcrumb">
+            <li class="active"><a th:href="@{/ticket/list}">Tickets</a><span class="divider">/</span></li>
+            <li th:text="${ticket.asunto}"></li>            
+        </ul>
+
+        <div class="row">
+            <div class="span12">
+                <div id="ticket-header">
+
+                    <div th:switch="${ticket.prioridad}" class="estado-ticket">
+                        <div th:case="0" class="label label-success "
+                             th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</div>
+
+                        <div th:case="1" class="label label-warning"
+                             th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</div>
+
+                        <div th:case="2" class="label label-important"
+                             th:text="${T(app.zelper.enums.PrioridadTicket).get( ticket.prioridad )}">Normal</div>
+                    </div>
+
+
+                    <h3 th:text="${ticket.getAsunto()}"> ASUNTO </h3>
+
+                    <span class="codigo-ticket text-info"
+                          th:text="'#'+${ticket.getCodigo()}" > CODIGO</span>
+
+                    <div class="muted detalle-ticket" 
+                         th:text="${ticket.getStake().getNombreCompleto()} +' | '+
+                         ${#dates.format(ticket.getFechaCreacion(),'dd/MM/yyyy hh:mm')}"> Jose EA | 29/14/2013 </div>
+
+                    <p th:utext="${ticket.getMensajeHtml()}">Mensaje del ticket.</p>
+
+                    <ul>
+                        <li class="adjunto" th:each="adjunto : ${ticket.getAdjuntos()}">
+                            <a target="_blank" th:href="@{/file/download/} + ${ticket.getCodigo()}+'/'+ ${adjunto.getNombre()} " th:text="${adjunto.getTitulo()}">FileName</a>
+                        </li>
+                    </ul>
+                    <hr/>
+                </div>
+                
+                <div id="ticket-messages">
+                    <div class="post-container" th:each="message : ${ticket.getMensajes()}">
+
+                        <h5 th:if="${message.getTipoPersona() == T(app.zelper.enums.Usuarios).Staff.getValue()}" 
+                            class="text-error" th:text="${message.getPersona().getNombreCompleto()}">Bladymir</h5>
+
+                        <h5 th:if="${message.getTipoPersona() == T(app.zelper.enums.Usuarios).Stakeholder.getValue()}" 
+                            class="text-info" th:text="${message.getPersona().getNombreCompleto()}">Bladymir</h5>
+
+                        <span class="muted detalle-message" th:text="${#dates.format(message.getFechaCreacion(),'dd/MM/yyyy hh:mm')}">29/14/2013</span>
+
+                        <p th:utext="${message.getMensajeHtml()}">Contenido del mensaje</p>
+                        <ul>
+                            <li class="adjunto" th:each="madjunto : ${message.getAdjuntos()}">
+                                <a target="_blank" th:href="@{/file/download/} + ${ticket.getCodigo()}+'/'+ ${madjunto.getNombre()} " th:text="${madjunto.getTitulo()}">FileName</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <form id="ticket-response">
+                    <input type="hidden" th:value="${_cid}" name="_cid"/>
+
+                    <div th:if="${ticket.getEstado() != T(app.zelper.enums.EstadoTicket).Resuelto.getValue()}">
+                        <textarea rows="3" class="response" name="comment" ></textarea>
+                        <br/>
+                        <span class="fileinput-button">
+                            <a href="#">Adjuntar archivos</a>
+                            <input id="fileupload" type="file" name="file" multiple="multiple"/>
+                        </span>
+
+                        <div id="upload"><ul></ul></div>
+
+
+                        <div class="pull-right">
+                            <a class="btn" href="#" id="btn-cancelar"> Cancelar</a> 
+                            <input type="submit" class="btn btn-primary" href="#" value="Responder"/>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+<div  th:substituteby="includes/footer"/>
+<script>
+    $(function() {
+
+        var ul = $('#upload ul');
+
+        $('#fileupload').fileupload({
+            url: '/signos/file/uploadMessage',
+            maxNumberOfFiles: 3,
+            dataType: 'json',
+            maxFileSize: 5000,
+            dropZone: '#upload',
+            formData: {
+                _cid: $('input[name="_cid"]').attr('value')
+            },
+            add: function(e, data) {
+                var tpl = $('<li class="working"><img src="/signos/img/load10.gif" /><p class="inline"></p><span></span></li>');
+                tpl.find('p').text(data.files[0].name);
+
+                data.context = tpl.appendTo(ul);
+
+                tpl.find('span').click(function() {
+                    if (tpl.hasClass('working')) {
+                        jqXHR.abort();
+
+                        tpl.fadeOut(function() {
+                            tpl.remove();
+                        });
+                    }
+                });
+                 $('input:submit').attr("disabled", "disabled");
+                var jqXHR = data.submit();
+            },
+            progress: function(e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+
+                if (progress === 100) {
+                    data.context.removeClass('working');
+                    $(data.context.find('img')).hide();
+                }
+            },
+            done: function(e, data) {
+                 $('input:submit').removeAttr("disabled");
+                if (data.result.success) {
+                    var remove = data.context.find('span');
+
+                    $(remove).attr("name", data.result.data);
+
+                    remove.click(function() {
+                        if (!data.context.hasClass('working')) {
+
+                            $.ajax({
+                                url: '/signos/file/removeMessage',
+                                type: 'POST',
+                                data: {
+                                    _cid: $('input[name="_cid"]').attr('value'),
+                                    file: $(remove).attr("name")
+                                },
+                                success: function(response) {
+                                    if (response.success) {
+                                        data.context.fadeOut(function() {
+                                            data.context.remove();
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
+
+                    });
+                }
+            },
+            fail: function(e, data) {
+             $('input:submit').removeAttr("disabled");
+                $(data.context.find('img')).hide();
+                data.context.addClass('error');
+            }
+        });
+
+
+
+
+        $('#btn-cancelar').click(function() {
+            clearForm();
+        });
+
+        function clearForm() {
+            $('#ticket-response').find("input[type=text], textarea").val("");
+        }
+
+        function addMessage(data) {
+            var mensaje = $('<div class="post-container">'
+                    + '<h5 class="text-info">' + data.nombreCreador + '</h5>'
+                    + '<span class="muted detalle-message">' + data.fechaCreacion + '</span>'
+                    + '<p>' + data.mensaje + ' </p><ul></ul></div>');
+
+            var adjuntos = mensaje.find("ul");
+
+            $.each(data.adjuntos, function(key, value) {
+                var url = "/signos/file/download/" + value.ticket + "/" + value.nombre;
+                var a = $("<a></a>").attr("href", url).attr("target", "_blank").text(value.titulo);
+                var li = $("<li></li>").addClass("adjunto").append(a);
+
+                $(adjuntos).append(li);
+            });
+
+            $(mensaje).hide().appendTo('#ticket-messages').fadeIn(1000);
+        }
+
+
+        $('#ticket-response').validate({
+            rules: {
+                comment: {required: true}
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                $(element).closest('.control-group').removeClass('error').addClass('success');
+            },
+            submitHandler: function(form) {
+                $('input:submit').attr("disabled", "disabled");
+                $('#fileupload').prop('disabled', true);
+
+                $(form).ajaxSubmit({
+                    url: '/signos/ticket/addMessage',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            addMessage(response.data);
+                            clearForm();
+
+                            $('#fileupload').prop('disabled', false)
+                            $('#upload ul').html('');
+
+                            var jacked = humane.create({addnCls: 'humane-original-success'});
+                            jacked.log(response.message);
+                        } else {
+                            var jacked = humane.create({addnCls: 'humane-original-error'});
+                            jacked.log(response.message);
+                        }
+                        $('input:submit').removeAttr("disabled");
+
+                    }
+                });
+            }
+        });
+
+
+
+
+    });
+
+</script>
+</html>

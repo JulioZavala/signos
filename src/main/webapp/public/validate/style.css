@@ -1,0 +1,32 @@
+/* =======================================
+
+                Main Stylesheet
+                
+                Building on Twitter Bootstrap
+                http://twitter.github.com/bootstrap/
+                
+========================================== */
+
+/* New styles below */
+
+label.valid {
+    text-indent: -9999px;
+    display: inline-block;
+    background-image: url("../bootstrap/img/glyphicons-halflings.png");
+    background-repeat: no-repeat;
+    background-position: -288px 0;
+    height: 14px;
+    /* margin-top: 1px;
+     *margin-right: .3em;
+     line-height: 14px;
+     vertical-align: text-top;*/
+    margin: 5px 0 0 5px;
+
+}
+
+label.error {
+    color: red;
+    padding: 2px 8px;
+    margin-top: 2px;
+    font-size: 0.9em;
+}

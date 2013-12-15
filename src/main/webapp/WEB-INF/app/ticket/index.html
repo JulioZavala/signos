@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SIGNOS HELPDESK</title>
+    <div th:substituteby="includes/header"/>
+</head>
+
+<body class="form-body">
+    <div th:substituteby="includes/menu :: stake"/>
+
+    <div class="container">
+        <div class="row">
+            <div class="span6">
+                <form class="form-ticket" id="nuevo-ticket">
+                    <h3>Nuevo Ticket</h3>
+
+                    <div class="control-group left-group">
+                        <label class="control-label">Correo</label>
+                        <div class="controls"><input type="text" name="email"/></div>
+                    </div>
+
+                    <div class="btn-toolbar pull-center">
+                        <button type="submit" class="btn btn-success">Nuevo</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="span6">
+                <form class="form-ticket" id="check-ticket">
+                    <h3>Consulta de Ticket</h3>
+
+                    <div class="control-group">
+                        <label class="control-label">Correo</label>
+                        <div class="controls"><input type="text" name="email"/></div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label"># Ticket</label>
+                        <div class="controls"><input type="text" name="nro_ticket"/></div>
+                    </div>
+
+
+                    <div class="btn-toolbar pull-center">
+                        <button type="submit" class="btn btn-primary">Consultar</button>
+                    </div>
+
+                 
+
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+      <div class="row text-right">
+        <a target="_blank" href="http://www.albatross.pe" class="roll-link"><span data-title="Albatross">Albatross</span></a>
+      </div>
+    </footer>
+</body>
+<div  th:substituteby="includes/footer"/>
+<script>
+    $(document).ready(function() {
+        $('#nuevo-ticket').validate({
+            rules: {
+                email: {required: true, email: true}
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            },
+            submitHandler: function(form) {
+                $('input:submit').attr("disabled", "disabled");
+
+                $(form).ajaxSubmit({
+                    url: 'checkEmail',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            window.location ="newTicket";
+                            
+                        } else {
+                            humane.log(response.message, {addnCls: 'humane-original-error'});
+                            $('input:submit').removeAttr("disabled");
+
+                        }
+                    }
+                });
+            }
+        });
+        
+        
+        $('#check-ticket').validate({
+            rules: {
+                email: {required: true, email: true},
+                nro_ticket: {required:true, number:true}
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            },
+            submitHandler: function(form) {
+                $('input:submit').attr("disabled", "disabled");
+
+                $(form).ajaxSubmit({
+                    url: 'checkTicket',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            window.location = response.data;
+                        } else {
+                            humane.log(response.message, {addnCls: 'humane-original-error'});
+                            $('input:submit').removeAttr("disabled");
+
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</html>

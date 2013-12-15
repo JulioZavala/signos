@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> SIGNOS - NUEVO TICKET</title>
+    <div th:substituteby="includes/header"/>
+</head>
+<body>
+    <div th:substituteby="includes/menu :: stake"/>
+    <div class="container">
+        <div class="row">
+            <div class="span8">
+                <div class="page-header">
+                    <h2>Nuevo Ticket</h2>
+                </div>
+
+                <form th:object="${ticket}" id="nuevo-ticket">
+                    <input type="hidden" th:value="${_cid}" name="_cid"/>
+
+                    <div class="control-group">
+                        <label class="control-label">Producto</label>
+
+                        <div class="controls">
+                            <select id="producto" name="producto.id" class="input-xlarge">
+                                <option th:each="producto : ${productos}" 
+                                        th:value="${producto.id}"
+                                        th:text="${producto.nombre}" /> 
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <label class="control-label">Asunto</label>
+
+                        <div class="controls">
+                            <input type="text" name="asunto" class="input-xlarge"/>
+                        </div>
+                    </div>
+
+
+                    <div class="control-group">
+                        <label class="control-label">Mensaje</label>
+
+                        <div class="controls">
+                            <textarea rows="5" name="mensaje" class="input-xxlarge"/>
+                        </div>
+                    </div>
+
+                    <span class="fileinput-button">
+                        <a href="#">Adjuntar archivos</a>
+                        <input id="fileupload" type="file" name="file" multiple="multiple"/>
+                    </span>
+
+                    <div id="upload"><ul></ul></div>
+
+
+                    <div class="btn-toolbar pull-center">
+                        <div  class="btn-group"><a class="btn" th:href="@{/ticket/list}">Cancelar</a></div>
+                        <div class="btn-group"><input type="submit" class="btn btn-primary" value="Nuevo Ticket" /></div>   
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+</body>
+<div  th:substituteby="includes/footer"/>
+<script>
+    $(function() {
+
+        $('#nuevo-ticket').validate({
+            rules: {
+                'producto.id': {required: true},
+                asunto: {required: true},
+                mensaje: {required: true}
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.text('OK!').addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            },
+            submitHandler: function(form) {
+                $('input:submit').attr("disabled", "disabled");
+                $('#fileupload').prop('disabled', true);
+
+                $(form).ajaxSubmit({
+                    type: "POST",
+                    url: 'saveTicket',
+                    success: function(response) {
+                        if (response.success) {
+                            humane.log(response.message, {timeout: 2000, addnCls: 'humane-original-success'}, function() {
+                                window.location.replace("ticket/list");
+                            });
+                        } else {
+                            humane.log(response.message, {addnCls: 'humane-original-error'});
+                            $('input:submit').removeAttr("disabled");
+
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+        var ul = $('#upload ul');
+
+        $('#fileupload').fileupload({
+            url: '/signos/file/upload',
+            maxNumberOfFiles: 3,
+            dataType: 'json',
+            maxFileSize: 5000,
+            dropZone: '#upload',
+            formData: {
+                _cid: $('input[name="_cid"]').attr('value')
+            },
+            add: function(e, data) {
+                var tpl = $('<li class="working"><img src="/signos/img/load10.gif" /><p class="inline"></p><span></span></li>');
+                tpl.find('p').text(data.files[0].name);
+
+                data.context = tpl.appendTo(ul);
+
+                tpl.find('span').click(function() {
+                    if (tpl.hasClass('working')) {
+                        jqXHR.abort();
+
+                        tpl.fadeOut(function() {
+                            tpl.remove();
+                        });
+                    }
+                });
+                $('input:submit').attr("disabled", "disabled");
+
+                var jqXHR = data.submit();
+            },
+            progress: function(e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+
+                if (progress === 100) {
+                    data.context.removeClass('working');
+                    $(data.context.find('img')).hide();
+                }
+            },
+            done: function(e, data) {
+                $('input:submit').removeAttr("disabled");
+                if (data.result.success) {
+                    var remove = data.context.find('span');
+
+                    $(remove).attr("name", data.result.data);
+
+                    remove.click(function() {
+                        if (!data.context.hasClass('working')) {
+
+                            $.ajax({
+                                url: '/signos/file/remove',
+                                type: 'POST',
+                                data: {
+                                    _cid: $('input[name="_cid"]').attr('value'),
+                                    file: $(remove).attr("name")
+                                },
+                                success: function(response) {
+                                    if (response.success) {
+                                        data.context.fadeOut(function() {
+                                            data.context.remove();
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
+
+                    });
+                }
+            },
+            fail: function(e, data) {
+                $('input:submit').removeAttr("disabled");
+                $(data.context.find('img')).hide();
+                data.context.addClass('error');
+            }
+        });
+
+
+
+
+    });
+
+</script>
+</html>

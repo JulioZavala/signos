@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> SIGNOS - STAKEHOLDERS</title>
+    <div th:substituteby="includes/header"/>
+</head>
+<body>
+    <div th:substituteby="includes/menu :: adm"/>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="page-header">
+                    <a class="btn btn-primary pull-right" href="#" th:href="@{/adm/stakeholder/new}">Agregar</a>
+                    <h2>STAKEHOLDERS</h2>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <td>Empresa</td>
+                    <td>Nombres</td>
+                    <td>Apellidos</td>
+                    <td>Email</td>
+                    <td>Celular</td>
+                    <td></td>
+                    </thead>
+                    <tr th:each="stake, item: ${stakes}" th:id="'row'+${item.count}">
+                        <td th:text="${stake.cliente.nombre}" ></td>
+                        <td th:text="${stake.persona.nombres}" th:href="@{/adm/stakeholder/}+${stake.id}"></td>
+                        <td th:text="${stake.persona.apellidos}"></td>
+                        <td th:text="${stake.persona.email}"></td>
+                        <td th:text="${stake.persona.celular}"></td>
+                        <td>
+                            <a th:href="@{/adm/stakeholder/} + ${stake.id} + '/update'">editar</a>
+                            <a class="showDeleteModal"  href="#" th:rel="${stake.id}">eliminar</a>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hide fade" id="deleteModal" th:href="@{/adm/stakeholder/delete}">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>Eliminar</h3>
+        </div>
+
+        <div class="modal-body">
+            <p>Confirmar para eliminar el registro.</p>
+        </div>
+
+        <div class="modal-footer">
+            <input type="hidden" name="id" id="deleteValue" value="" />
+
+            <a data-toggle="modal" href="#deleteModal" class="btn">Cancelar</a>
+            <a class="btn btn-danger" id="confirmDelete" >Eliminar</a>
+
+        </div>
+    </div>
+</body>
+<div  th:substituteby="includes/footer"/>    
+
+
+<script>
+    var rowId = null;
+    var deleteValue = null;
+
+    $('.showDeleteModal').each(function(index, elem) {
+        $(elem).click(function() {
+            rowId = $(elem).parents('tr').first().attr('id');
+            deleteValue = $(elem).attr('rel');
+
+            $('#deleteModal').modal('show');
+        });
+    });
+
+    $('#confirmDelete').click(function() {
+        $.ajax({
+            url: $('#deleteModal').attr('href').toString(),
+            method: 'post',
+            data: {id: deleteValue},
+            success: function(result) {
+                $('#deleteModal').modal('hide');
+                
+                if (result.success) {
+                    $('#' + rowId).fadeOut(1000, function() {
+                        $('#' + rowId).remove();
+                    });
+                }
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SIGNOS - PRODUCTOS</title>
+    <div th:substituteby="includes/header"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <div th:substituteby="includes/menu :: adm"/>
+
+    <input type="hidden" th:value="${_cid}" name="_cid"/>
+
+    <div class="container">
+        <div class="row">
+            <div class="span8">
+                <div class="page-header">
+                     <h2 th:if="${producto.id > 0}" th:text="${producto.nombre}">Editar </h2>
+                        <h2 th:unless="${producto.id > 0}">Nuevo cliente</h2>
+                </div>
+                <form class="form-horizontal"  th:action="@{/adm/producto/save}" method="post" th:object="${producto}" >
+                    
+                    <input type="hidden" th:value="${_cid}" name="_cid"/>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Cliente</label>
+                        
+                        <div class="controls">
+                            <select name="cliente.id"  th:field="*{cliente.id}">
+                                <option th:each="cliente: ${clientes}" 
+                                        th:value="${cliente.id}"
+                                        th:text="${cliente.nombre}" 
+                                        /> 
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Nombre</label>
+                        
+                        <div class="controls">
+                            <input type="text" name="nombre" th:field="*{nombre}"/>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Descripción</label>
+                        
+                        <div class="controls">
+                            <textarea class="input-xlarge" name="descripcion" th:field="*{descripcion}"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-toolbar pull-right">
+                        <div class="btn-group"> <a class="btn" href="#" th:href="@{/adm/producto/}"> Cancelar </a></div>
+                        <div class="btn-group"><input class="btn btn-primary" type="submit" value="Guardar"/></div>
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+
+</body>
+<div  th:substituteby="includes/footer"/>
+</html>
